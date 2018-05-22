@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, sys, re, yaml, json, argparse
+import os, sys, re, yaml, json
 import tweepy
 import time
 import socket
 import http.client
 
 from datetime import datetime
-from hanziconv import HanziConv
 
 from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
@@ -38,7 +37,7 @@ class QueueListener(StreamListener):
         # corpus file
         if not os.path.exists('corpus'): os.makedirs('corpus')
         self.dumpfile = "corpus/%s_%s.txt" % (self.lang, datetime.now().strftime("%Y%m%d_%H%M%S"))
-        
+
 
     def on_data(self, data):
         """Routes the raw stream data to the appropriate method."""
@@ -78,7 +77,7 @@ class QueueListener(StreamListener):
                     time.sleep(10)
             lines_grps = [[lines_mapper.get(str(sid)), txt] for sid, txt in zip(sids, texts) if lines_mapper.get(str(sid))]
             lines_grps = [[self.preprocess(s) for s in lines] for lines in lines_grps]
-            
+
             for lines in lines_grps:
                 for i in range(len(lines)-1):
                     fdump.write("%s\n%s\n" % (lines[i], lines[i+1]))
@@ -88,35 +87,33 @@ class QueueListener(StreamListener):
 
     is_zh = re.compile(r'([\p{IsHan}]+)', re.UNICODE)
     def preprocess(self, line, cond=None):
-        # line = HanziConv.toTraditional(line) # 繁体字
-        # line = re.sub(r"\@[a-z0-9][a-z0-9]*", '', line)
-        # line = re.sub(r"\#[a-z0-9][a-z0-9]*", '', line)
+        line = re.sub(r"\@[a-z0-9][a-z0-9]*", '', line) # IDを除去
+        # line = re.sub(r"\#[a-z0-9][a-z0-9]*", '', line) # ハッシュタグを除去
         # line = re.split(r"\([a-z][a-z]\)", line.lower())[0]
         line = re.sub("\s+", ' ', line).strip().lower()
         return line
 
 
 def main():
-    # parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--lang', type=str, required=True, help='language: en/zh/ja')
-    args = parser.parse_args()
-
     # open stream
     listener = QueueListener(args)
     stream = Stream(listener.auth, listener, language='ja')
-    # print(args.lang)
+
     # [stream filter]
-    if args.lang == 'en':
-        stream.filter(locations=[-122.75,36.8,-121.75,37.8, -74,40,-73,41])  # San Francisco or New York City
-    elif args.lang == 'zh':
-        stream.filter(languages=["zh"], track=['I', 'you', 'http', 'www', 'co', '@', '#', '。', '，', '！', '.', '!', ',', ':', '：', '』', ')', '...', '我', '你', '他', '哈', '的', '是', '人', '-', '/'])
-    elif args.lang == 'ja':
-        stream.filter(languages=["ja"], track=['私','あなた','俺','w','草','ー','する','です','ます','けど','何','I', 'you', 'http', 'www', 'co', '@', '#', '＃', '。', '，', '！','？','…', '.', '!','?', ',', ':', '：', '』', ')', '）', '...'])
+    stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','@', '#', '＃', '。', '，', '！','？','…', '.', '!', '?', ',', ':', '：', '』', ')', '）', '...')
+    #stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','I', 'you', 'http', 'www', 'co', '@', '#', '＃', '。', '，', '！','？','…', '.', '!','?', ',', ':', '：', '』', ')', '）', '...'])
+
+    # Default Script
+    #if args.lang == 'en':
+    #    stream.filter(locations=[-122.75,36.8,-121.75,37.8, -74,40,-73,41])  # San Francisco or New York City
+    #elif args.lang == 'zh':
+    #    stream.filter(languages=["zh"], track=['I', 'you', 'http', 'www', 'co', '@', '#', '。', '，', '！', '.', '!', ',', ':', '：', '』', ')', '...', '我', '你', '他', '哈', '的', '是', '人', '-', '/'])
+    #elif args.lang == 'ja':
+    #    stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','I', 'you', 'http', 'www', 'co', '@', '#', '＃', '。', '，', '！','？','…', '.', '!','?', ',', ':', '：', '』', ')', '）', '...'])
     # stream.filter(locations=[-122.75,36.8,-121.75,37.8])  # San Francisco
     # stream.filter(locations=[-74,40,-73,41])  # New York City
     # stream.filter(languages=["en"], track=['python', 'obama', 'trump'])
-    # 
+    #
     # stream.filter(languages=["zh"], locations=[-180,-90,180,90])
     # stream.filter(languages=["ja"], track=['バイト'])
 

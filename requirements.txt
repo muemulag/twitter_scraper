@@ -1,0 +1,4 @@
+numpy==1.13.1
+PyYAML==3.12
+tweepy==3.6.0
+requests==2.18.4
