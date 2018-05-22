@@ -20,13 +20,13 @@ MAX_TCPIP_TIMEOUT = 16
 
 class QueueListener(StreamListener):
 
-    def __init__(self, args):
+    def __init__(self):
         """Creates a new stream listener with an internal queue for tweets."""
         super(QueueListener, self).__init__()
         self.num_handled = 0
         self.queue = [] #Queue.Queue()
         self.batch_size = 100
-        self.lang = args.lang
+        self.lang = 'ja'
 
         # tweepy
         cfg = yaml.load(open('config.yml', 'rt'))['twitter']
@@ -96,26 +96,16 @@ class QueueListener(StreamListener):
 
 def main():
     # open stream
-    listener = QueueListener(args)
+    listener = QueueListener()
     stream = Stream(listener.auth, listener, language='ja')
 
     # [stream filter]
-    stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','@', '#', '＃', '。', '，', '！','？','…', '.', '!', '?', ',', ':', '：', '』', ')', '）', '...'])
+    stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','@', '#', '＃', '。', '，', '！','？','…', '.', '!','?', ',', ':', '：', '』', ')', '）', '...'])
     #stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','I', 'you', 'http', 'www', 'co', '@', '#', '＃', '。', '，', '！','？','…', '.', '!','?', ',', ':', '：', '』', ')', '）', '...'])
 
-    # Default Script
-    #if args.lang == 'en':
-    #    stream.filter(locations=[-122.75,36.8,-121.75,37.8, -74,40,-73,41])  # San Francisco or New York City
-    #elif args.lang == 'zh':
-    #    stream.filter(languages=["zh"], track=['I', 'you', 'http', 'www', 'co', '@', '#', '。', '，', '！', '.', '!', ',', ':', '：', '』', ')', '...', '我', '你', '他', '哈', '的', '是', '人', '-', '/'])
-    #elif args.lang == 'ja':
-    #    stream.filter(languages=["ja"], track=['私','あなた','俺','ー','する','です','ます','けど','何','I', 'you', 'http', 'www', 'co', '@', '#', '＃', '。', '，', '！','？','…', '.', '!','?', ',', ':', '：', '』', ')', '）', '...'])
-    # stream.filter(locations=[-122.75,36.8,-121.75,37.8])  # San Francisco
+    # Default Script# stream.filter(locations=[-122.75,36.8,-121.75,37.8])  # San Francisco
     # stream.filter(locations=[-74,40,-73,41])  # New York City
     # stream.filter(languages=["en"], track=['python', 'obama', 'trump'])
-    #
-    # stream.filter(languages=["zh"], locations=[-180,-90,180,90])
-    # stream.filter(languages=["ja"], track=['バイト'])
 
     try:
         while True:
