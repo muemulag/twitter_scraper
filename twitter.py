@@ -84,8 +84,6 @@ class QueueListener(StreamListener):
                     pcnt += 1
         self.num_handled += pcnt
 
-
-    is_zh = re.compile(r'([\p{IsHan}]+)', re.UNICODE)
     def preprocess(self, line, cond=None):
         line = re.sub(r"\@[a-z0-9][a-z0-9]*", '', line) # IDを除去
         # line = re.sub(r"\#[a-z0-9][a-z0-9]*", '', line) # ハッシュタグを除去
