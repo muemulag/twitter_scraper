@@ -4,3 +4,4 @@ go_*
 *.yaml
 *.yml
 *.old
+corpus/*.txt
