@@ -3,5 +3,4 @@ sftp-config.json
 go_*
 *.yaml
 *.yml
-corpus/*.txt
 *.old
