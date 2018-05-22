@@ -85,7 +85,7 @@ class QueueListener(StreamListener):
         self.num_handled += pcnt
 
     def preprocess(self, line, cond=None):
-        line = re.sub(r"\@[a-z0-9][a-z0-9]*", '', line) # IDを除去
+        # line = re.sub(r"\@[a-z0-9][a-z0-9]*", '', line) # IDを除去(正しく除去されない)
         # line = re.sub(r"\#[a-z0-9][a-z0-9]*", '', line) # ハッシュタグを除去
         # line = re.split(r"\([a-z][a-z]\)", line.lower())[0]
         line = re.sub("\s+", ' ', line).strip().lower()
