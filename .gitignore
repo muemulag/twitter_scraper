@@ -5,3 +5,4 @@ go_*
 *.yml
 *.old
 corpus/*.txt
+.ipynb_checkpoints/*
