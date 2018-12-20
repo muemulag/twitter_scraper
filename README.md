@@ -1,3 +1,4 @@
+# StreamingAPIが廃止されたため使えなくなりました
 # Twitter Scraper
 
 Scraping twitter content from [twitter streaming API](https://dev.twitter.com/streaming/overview), in python3.
